@@ -3,7 +3,6 @@ import { Router, Request, Response } from 'express';
 import { compare } from 'bcrypt';
 
 import jwt from 'jsonwebtoken';
-import passport from 'passport';
 
 import usersModel from '../db/usersModel';
 
@@ -14,7 +13,7 @@ authRouter.post("/register", async (req: Request, res: Response) => {
         const { username, password } = req.body
         const userExists = await usersModel.exists({ username: username })
         if (userExists) {
-            return res.status(400).json({ message: "User already exists." });
+            return res.status(409).json({ message: "User already exists." });
         }
         await usersModel.create({
             username: username,

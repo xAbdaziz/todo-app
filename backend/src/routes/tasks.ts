@@ -19,9 +19,9 @@ tasksRouter.post('/', async (req: Request, res: Response) => {
     const taskExists = await tasksModel.exists({ task: task })
     if (!taskExists) {
       await tasksModel.create({ task: task })
-      return res.json({ 'message': 'Task Added!' })
+      return res.status(201).json({ message: 'Task Added!' })
     }
-    return res.status(400).json({ message: 'Task already exists.' })
+    return res.status(409).json({ message: 'Task already exists.' })
   } catch {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
@@ -32,10 +32,10 @@ tasksRouter.put('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const taskExists = await tasksModel.exists({ _id: id })
     if (!taskExists) {
-      return res.json({ 'message': 'Task doesn\'t exists' })
+      return res.status(404).json({ message: 'Task doesn\'t exists' })
     }
     await tasksModel.updateOne({ _id: id }, { isCompleted: req.query.completed })
-    return res.json({ 'message': 'Task Updated!' })
+    return res.json({ message: 'Task Updated!' })
   } catch {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
@@ -46,7 +46,7 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const taskExists = await tasksModel.exists({ _id: id })
     if (!taskExists) {
-      return res.status(400).json({ 'message': 'Task doesn\'t exists' })
+      return res.status(404).json({ message: 'Task doesn\'t exists' })
     }
     await tasksModel.deleteOne({ _id: id })
     return res.json({ 'message': 'Task Deleted!' })
