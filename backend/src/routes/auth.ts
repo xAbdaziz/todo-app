@@ -11,6 +11,9 @@ const authRouter: Router = Router();
 authRouter.post("/register", async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body
+        if (!username || !password) {
+            return res.status(422).json({ message: "No username/password was provided" })
+        }
         const userExists = await usersModel.exists({ username: username })
         if (userExists) {
             return res.status(409).json({ message: "User already exists." });
@@ -28,6 +31,9 @@ authRouter.post("/register", async (req: Request, res: Response) => {
 authRouter.post("/login", async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body
+        if (!username || !password) {
+            return res.status(422).json({ message: "No username/password was provided" })
+        }
         const userExists = await usersModel.findOne({ username: username })
         if (!userExists) {
             return res.status(404).json({ message: "User doesn't exists" });

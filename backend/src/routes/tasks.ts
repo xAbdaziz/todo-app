@@ -16,6 +16,9 @@ tasksRouter.get('/', async (req: Request, res: Response) => {
 tasksRouter.post('/', async (req: Request, res: Response) => {
   try {
     const { task } = req.body;
+    if (!task) {
+      return res.status(422).json({ message: "No task was provided" })
+    }
     const taskExists = await tasksModel.exists({ task: task })
     if (!taskExists) {
       await tasksModel.create({ task: task })
@@ -30,6 +33,9 @@ tasksRouter.post('/', async (req: Request, res: Response) => {
 tasksRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
+    if (!id) {
+      return res.status(422).json({ message: "No id was provided" })
+    }
     const taskExists = await tasksModel.exists({ _id: id })
     if (!taskExists) {
       return res.status(404).json({ message: 'Task doesn\'t exists' })
@@ -44,6 +50,9 @@ tasksRouter.put('/:id', async (req: Request, res: Response) => {
 tasksRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
+    if (!id) {
+      return res.status(422).json({ message: "No id was provided" })
+    }
     const taskExists = await tasksModel.exists({ _id: id })
     if (!taskExists) {
       return res.status(404).json({ message: 'Task doesn\'t exists' })
