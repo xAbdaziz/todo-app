@@ -1,7 +1,8 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import Form from "./components/Form";
+import Form from "./components/TaskSubmitForm";
 import List from "./components/List";
+import getCookie from './utils/getCookie';
 
 type TaskItem = {
   _id: string;
@@ -19,7 +20,8 @@ export default function Home() {
   }, []);
 
   const fetchTasks = async () => {
-    const response = await fetch(`http://${BACKEND_URL}/tasks`);
+    const response = await fetch(`http://${BACKEND_URL}/tasks`,
+      { headers: { 'Authorization': `Bearer ${getCookie('token')}` } });
     const data = await response.json();
     setTasks(data);
   };

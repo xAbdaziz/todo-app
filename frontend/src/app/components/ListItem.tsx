@@ -1,3 +1,5 @@
+import getCookie from "../utils/getCookie"
+
 type ApiResponse = {
   message: String
 }
@@ -14,7 +16,11 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 export default function ListItem({ key, id, isCompleted, task, fetchTasks }: ListItemProps) {
   async function handleDeleteClick() {
-    const req = await fetch(`http://${BACKEND_URL}/tasks/${id}`, { method: 'DELETE' })
+    const req = await fetch(`http://${BACKEND_URL}/tasks/${id}`,
+      {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${getCookie('token')}` }
+      })
     const res: ApiResponse = await req.json();
     alert(res.message)
     if (req.status === 200) {
@@ -23,7 +29,11 @@ export default function ListItem({ key, id, isCompleted, task, fetchTasks }: Lis
   }
 
   async function handleCheckboxChange(value: Boolean) {
-    await fetch(`http://${BACKEND_URL}/tasks/${id}/?completed=${value}`, { method: 'PUT' })
+    await fetch(`http://${BACKEND_URL}/tasks/${id}/?completed=${value}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${getCookie('token')}` }
+      })
   }
 
   return (
