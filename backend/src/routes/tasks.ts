@@ -5,13 +5,15 @@ import passport from 'passport';
 
 const tasksRouter: Router = Router();
 
-tasksRouter.get('/', passport.authenticate("jwt", { session: false }),
-  async (req: Request, res: Response) => {
-    try {
-      //@ts-ignore
-      const id = req.user?._id
+interface User extends Express.User {
+  _id: string
+}
 
-      const tasks = await tasksModel.find({ ownerId: id })
+tasksRouter.get('/', passport.authenticate("jwt", { session: false }),
+  async (req: Request["body"], res: Response) => {
+    try {
+      const userId: User = req.user?._id
+      const tasks = await tasksModel.find({ ownerId: userId })
       return res.send(tasks)
     } catch {
       return res.status(500).json({ message: 'Internal Server Error' })
@@ -19,11 +21,9 @@ tasksRouter.get('/', passport.authenticate("jwt", { session: false }),
   })
 
 tasksRouter.post('/', passport.authenticate("jwt", { session: false }),
-  async (req: Request, res: Response) => {
+  async (req: Request["body"], res: Response) => {
     try {
-      //@ts-ignore
       const id = req.user?._id
-
       const { task } = req.body;
       if (!task) {
         return res.status(422).json({ message: "No task was provided" })
